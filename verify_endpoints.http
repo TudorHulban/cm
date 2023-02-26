@@ -1,0 +1,48 @@
+### verify alive
+GET http://localhost:9998 HTTP/1.1
+content-type: text/plain
+
+### Get Current Target
+GET http://localhost:9998/current HTTP/1.1
+content-type: text/plain
+
+### Get Targets
+GET http://localhost:9998/targets HTTP/1.1
+content-type: text/plain
+
+### Get Current Target Configuration
+POST http://localhost:9998/target HTTP/1.1
+content-type: application/json
+
+### Get Target Configuration
+POST http://localhost:9998/target HTTP/1.1
+content-type: application/json
+
+{
+    "target": "target1"
+}
+
+### Get Variable Values - all targets
+POST http://localhost:9998/values HTTP/1.1
+content-type: application/json
+
+{
+    "name": "var01"
+}
+
+### Get Variable Values - selected targets
+POST http://localhost:9998/values HTTP/1.1
+content-type: application/json
+
+{
+    "name": "var01",
+    "targets":["target1", "target3"]
+}
+
+### Delete Target Configuration
+POST http://localhost:9998/delete HTTP/1.1
+content-type: application/json
+
+{
+    "target": "target1"
+}
