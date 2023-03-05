@@ -12,7 +12,6 @@ import (
 
 type OSVariableName string
 type OSVariableValue string
-type TargetID string // can be in the form of environment/domain/service
 
 type Entry struct {
 	Name  OSVariableName
