@@ -72,7 +72,9 @@ func (api *API) HandlerGetVariableValues() fiber.Handler {
 func (api *API) HandlerGetTargetConfiguration() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		type request struct {
-			Target string `json:"target"`
+			Target     string `json:"target"`
+			AppName    string `json:"app-name"`
+			AppVersion string `json:"app-version"`
 		}
 
 		var req request
@@ -84,8 +86,10 @@ func (api *API) HandlerGetTargetConfiguration() fiber.Handler {
 			})
 		}
 
-		content, errFind := api.controller.GetTargetConfiguration(&services.ParamsFindTargetConfiguration{
-			Target: req.Target,
+		content, errFind := api.controller.GetTargetConfigurationWSlice(&services.ParamsFindTargetConfiguration{
+			Target:     req.Target,
+			AppName:    req.AppName,
+			AppVersion: req.AppVersion,
 		})
 		if errFind != nil {
 			if errors.As(errFind, &apperrors.ErrValidation{}) {
@@ -95,6 +99,8 @@ func (api *API) HandlerGetTargetConfiguration() fiber.Handler {
 				})
 			}
 
+			// TODO: add record not found case
+
 			return c.Status(http.StatusInternalServerError).JSON(&fiber.Map{
 				"success": false,
 				"error":   helpers.ReplEOL(errFind.Error()),
@@ -102,5 +108,37 @@ func (api *API) HandlerGetTargetConfiguration() fiber.Handler {
 		}
 
 		return c.Status(http.StatusOK).Send(content)
+	}
+}
+
+func (api *API) HandlerGetInventoryForService() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		type request struct {
+			ServiceName string `json:"service-name"`
+		}
+
+		var req request
+
+		if errBody := c.BodyParser(&req); errBody != nil && errBody.Error() != "unexpected end of JSON input" {
+			return c.Status(http.StatusBadRequest).JSON(&fiber.Map{
+				"success": false,
+				"error":   "BodyParser:" + errBody.Error(),
+			})
+		}
+
+		reconstructedInventory, errGet := api.serviceMain.GetInventoryForService(&services.ParamsGetInventoryForService{
+			ServiceName: req.ServiceName,
+		})
+		if errGet != nil {
+			return c.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+				"success": false,
+				"error":   helpers.ReplEOL(errGet.Error()),
+			})
+		}
+
+		return c.Status(http.StatusOK).JSON(&fiber.Map{
+			"success":   true,
+			"inventory": reconstructedInventory,
+		})
 	}
 }

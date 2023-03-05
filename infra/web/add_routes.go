@@ -9,4 +9,6 @@ func (w *WebServer) AddRoutes() {
 
 	w.App.Post("/values", w.APIS.HandlerGetVariableValues())
 	w.App.Post("/delete", w.APIS.HandlerDeleteTargetConfiguration())
+
+	w.App.Post("/inventory", w.APIS.HandlerGetInventoryForService())
 }

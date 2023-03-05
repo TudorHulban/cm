@@ -8,6 +8,7 @@ import (
 	"test/app/apperrors"
 	"test/app/configuration"
 	"test/app/services"
+	"test/domain/inventory"
 
 	"test/domain"
 	"test/helpers"
@@ -40,7 +41,12 @@ func main() {
 		os.Exit(apperrors.OSExitForConfigurationIssues)
 	}
 
-	service, errServ := services.NewServiceMain(configuration)
+	inventory := inventory.NewInventory()
+
+	service, errServ := services.NewServiceMain(&services.PiersServiceMain{
+		Configuration: configuration,
+		Inventory:     inventory,
+	})
 	if errServ != nil {
 		log.Error().Msg(helpers.ReplEOL(errServ.Error()))
 

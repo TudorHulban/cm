@@ -5,13 +5,29 @@ import (
 	"test/domain"
 
 	"github.com/asaskevich/govalidator"
+	"github.com/rs/zerolog/log"
 )
 
 type ParamsFindTargetConfiguration struct {
-	Target string
+	Target     string
+	AppName    string `valid:"required"`
+	AppVersion string `valid:"required"`
 }
 
 func (s *ServiceMain) GetTargetConfiguration(params *ParamsFindTargetConfiguration) (*domain.TargetConfiguration, error) {
+	if _, errVa := govalidator.ValidateStruct(params); errVa != nil {
+		return nil, apperrors.ErrValidation{
+			Caller: "GetTargetConfiguration",
+			Issue:  errVa,
+		}
+	}
+
+	go func() {
+		if errInventory := s.inventory.AddEntry(params.AppName, params.AppVersion); errInventory != nil {
+			log.Error().Msgf("inventory.AddEntry:%s", errInventory)
+		}
+	}()
+
 	return s.configuration.FindTargetConfiguration(params.Target)
 }
 
