@@ -2,56 +2,49 @@ package inventory
 
 import (
 	"sync"
-	"test/app/apperrors"
-	"time"
 )
 
-type ServiceName string
-
-type Entry struct {
-	Timestamp time.Time
-	Version   string
-}
-
 type Inventory struct {
-	Items map[ServiceName][]*Entry
+	Targets       map[TargetID]*Target
+	CurrentTarget TargetID
+
 	sync.Mutex
 }
 
 func NewInventory() *Inventory {
 	return &Inventory{
-		Items: make(map[ServiceName][]*Entry),
+		Targets: make(map[TargetID]*Target),
 	}
 }
 
-func (inv *Inventory) AddEntry(serviceName, version string) error {
-	inv.Lock()
-	defer inv.Unlock()
+// func (inv *Inventory) AddEntry(serviceName, version string) error {
+// 	inv.Lock()
+// 	defer inv.Unlock()
 
-	_, exists := inv.Items[ServiceName(serviceName)]
-	if !exists {
-		inv.Items[ServiceName(serviceName)] = []*Entry{
-			{
-				Timestamp: time.Now(),
-				Version:   version,
-			},
-		}
+// 	_, exists := inv.Items[ServiceName(serviceName)]
+// 	if !exists {
+// 		inv.Items[ServiceName(serviceName)] = []*Entry{
+// 			{
+// 				Timestamp: time.Now(),
+// 				Version:   version,
+// 			},
+// 		}
 
-		return nil
-	}
+// 		return nil
+// 	}
 
-	inv.Items[ServiceName(serviceName)] = append(inv.Items[ServiceName(serviceName)], &Entry{
-		Timestamp: time.Now(),
-		Version:   version,
-	})
+// 	inv.Items[ServiceName(serviceName)] = append(inv.Items[ServiceName(serviceName)], &Entry{
+// 		Timestamp: time.Now(),
+// 		Version:   version,
+// 	})
 
-	return nil
-}
+// 	return nil
+// }
 
-func (inv *Inventory) FindInventoryForService(name string) ([]*Entry, error) {
-	if entries, exists := inv.Items[ServiceName(name)]; exists {
-		return entries, nil
-	}
+// func (inv *Inventory) FindInventoryForService(name string) ([]*Entry, error) {
+// 	if entries, exists := inv.Items[ServiceName(name)]; exists {
+// 		return entries, nil
+// 	}
 
-	return nil, apperrors.ErrRecordNotFound{}
-}
+// 	return nil, apperrors.ErrRecordNotFound{}
+// }

@@ -10,14 +10,6 @@ import (
 	"test/app/apperrors"
 )
 
-type OSVariableName string
-type OSVariableValue string
-
-type Entry struct {
-	Name  OSVariableName
-	Value OSVariableValue
-}
-
 type TargetValue struct {
 	TargetID TargetID
 	Value    OSVariableValue

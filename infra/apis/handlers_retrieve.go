@@ -72,9 +72,9 @@ func (api *API) HandlerGetVariableValues() fiber.Handler {
 func (api *API) HandlerGetTargetConfiguration() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		type request struct {
-			Target     string `json:"target"`
-			AppName    string `json:"app-name"`
-			AppVersion string `json:"app-version"`
+			Target         string `json:"target"`
+			ServiceName    string `json:"service-name"`
+			ServiceVersion string `json:"service-version"`
 		}
 
 		var req request
@@ -87,9 +87,9 @@ func (api *API) HandlerGetTargetConfiguration() fiber.Handler {
 		}
 
 		content, errFind := api.controller.GetTargetConfigurationWSlice(&services.ParamsFindTargetConfiguration{
-			Target:     req.Target,
-			AppName:    req.AppName,
-			AppVersion: req.AppVersion,
+			Target:         req.Target,
+			ServiceName:    req.ServiceName,
+			ServiceVersion: req.ServiceVersion,
 		})
 		if errFind != nil {
 			if errors.As(errFind, &apperrors.ErrValidation{}) {

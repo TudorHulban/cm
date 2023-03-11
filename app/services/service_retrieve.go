@@ -9,9 +9,9 @@ import (
 )
 
 type ParamsFindTargetConfiguration struct {
-	Target     string
-	AppName    string `valid:"required"`
-	AppVersion string `valid:"required"`
+	Target         string
+	ServiceName    string `valid:"required"`
+	ServiceVersion string `valid:"required"`
 }
 
 func (s *ServiceMain) GetTargetConfiguration(params *ParamsFindTargetConfiguration) (*domain.TargetConfiguration, error) {
@@ -23,7 +23,7 @@ func (s *ServiceMain) GetTargetConfiguration(params *ParamsFindTargetConfigurati
 	}
 
 	go func() {
-		if errInventory := s.inventory.AddEntry(params.AppName, params.AppVersion); errInventory != nil {
+		if errInventory := s.inventory.AddEntry(params.ServiceName, params.ServiceVersion); errInventory != nil {
 			log.Error().Msgf("inventory.AddEntry:%s", errInventory)
 		}
 	}()
