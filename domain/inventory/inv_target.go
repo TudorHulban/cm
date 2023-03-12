@@ -63,16 +63,29 @@ func (t *Target) AddServices(services ...*Service) {
 	t.Services = append(t.Services, services...)
 }
 
-func (inv *Inventory) CheckIn(target string) error {
-	t, exists := inv.Targets[TargetID(target)]
-	if !exists {
-		return apperrors.ErrValidation{}
-	}
-
+func (t *Target) FindServiceByName(name string, andVersions ...string) []*Service {
 	t.Lock()
 	defer t.Unlock()
 
-	t.LastCheckin = time.Now()
+	var res []*Service
 
-	return nil
+	for _, service := range t.Services {
+		if service.Name == name {
+			if len(andVersions) == 0 {
+				res = append(res, service)
+
+				continue
+			}
+
+			for _, version := range andVersions {
+				if service.Version == version {
+					res = append(res, service)
+
+					continue
+				}
+			}
+		}
+	}
+
+	return res
 }

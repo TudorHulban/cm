@@ -2,6 +2,8 @@ package inventory
 
 import (
 	"sync"
+	"test/app/apperrors"
+	"time"
 )
 
 type Inventory struct {
@@ -17,34 +19,33 @@ func NewInventory() *Inventory {
 	}
 }
 
-// func (inv *Inventory) AddEntry(serviceName, version string) error {
-// 	inv.Lock()
-// 	defer inv.Unlock()
+func (inv *Inventory) CheckIn(target TargetID) error {
+	t, exists := inv.Targets[target]
+	if !exists {
+		return apperrors.ErrValidation{}
+	}
 
-// 	_, exists := inv.Items[ServiceName(serviceName)]
-// 	if !exists {
-// 		inv.Items[ServiceName(serviceName)] = []*Entry{
-// 			{
-// 				Timestamp: time.Now(),
-// 				Version:   version,
-// 			},
-// 		}
+	t.Lock()
+	defer t.Unlock()
 
-// 		return nil
-// 	}
+	t.LastCheckin = time.Now()
 
-// 	inv.Items[ServiceName(serviceName)] = append(inv.Items[ServiceName(serviceName)], &Entry{
-// 		Timestamp: time.Now(),
-// 		Version:   version,
-// 	})
+	return nil
+}
 
-// 	return nil
-// }
+func (inv *Inventory) FindServices(name, version string, inTargets ...TargetID) []*Service {
+	var res []*Service
 
-// func (inv *Inventory) FindInventoryForService(name string) ([]*Entry, error) {
-// 	if entries, exists := inv.Items[ServiceName(name)]; exists {
-// 		return entries, nil
-// 	}
+	for _, targetID := range inTargets {
+		target, exists := inv.Targets[TargetID(targetID)]
+		if !exists {
+			continue
+		}
 
-// 	return nil, apperrors.ErrRecordNotFound{}
-// }
+		go inv.CheckIn(targetID)
+
+		res = append(res, target.FindServiceByName(name, version)...)
+	}
+
+	return res
+}

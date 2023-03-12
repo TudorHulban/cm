@@ -5,7 +5,6 @@ import (
 	"test/domain"
 
 	"github.com/asaskevich/govalidator"
-	"github.com/rs/zerolog/log"
 )
 
 type ParamsFindTargetConfiguration struct {
@@ -22,11 +21,11 @@ func (s *ServiceMain) GetTargetConfiguration(params *ParamsFindTargetConfigurati
 		}
 	}
 
-	go func() {
-		if errInventory := s.inventory.AddEntry(params.ServiceName, params.ServiceVersion); errInventory != nil {
-			log.Error().Msgf("inventory.AddEntry:%s", errInventory)
-		}
-	}()
+	// go func() {
+	// 	if errInventory := s.inventory.AddEntry(params.ServiceName, params.ServiceVersion); errInventory != nil {
+	// 		log.Error().Msgf("inventory.AddEntry:%s", errInventory)
+	// 	}
+	// }()
 
 	return s.configuration.FindTargetConfiguration(params.Target)
 }

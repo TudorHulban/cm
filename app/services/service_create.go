@@ -1,23 +1,17 @@
 package services
 
-import (
-	"test/app/apperrors"
+// type ParamsAddEntry struct {
+// 	ServiceName string `valid:"required"`
+// 	Version     string `valid:"required"`
+// }
 
-	"github.com/asaskevich/govalidator"
-)
+// func (s *ServiceMain) AddInventoryEntry(params *ParamsAddEntry) error {
+// 	if _, errVa := govalidator.ValidateStruct(params); errVa != nil {
+// 		return apperrors.ErrValidation{
+// 			Caller: "AddEntry",
+// 			Issue:  errVa,
+// 		}
+// 	}
 
-type ParamsAddEntry struct {
-	ServiceName string `valid:"required"`
-	Version     string `valid:"required"`
-}
-
-func (s *ServiceMain) AddInventoryEntry(params *ParamsAddEntry) error {
-	if _, errVa := govalidator.ValidateStruct(params); errVa != nil {
-		return apperrors.ErrValidation{
-			Caller: "AddEntry",
-			Issue:  errVa,
-		}
-	}
-
-	return s.inventory.AddEntry(params.ServiceName, params.Version)
-}
+// 	return s.inventory.AddEntry(params.ServiceName, params.Version)
+// }

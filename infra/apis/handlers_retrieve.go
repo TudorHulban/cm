@@ -111,10 +111,12 @@ func (api *API) HandlerGetTargetConfiguration() fiber.Handler {
 	}
 }
 
-func (api *API) HandlerGetInventoryForService() fiber.Handler {
+func (api *API) HandlerInventoryGetService() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		type request struct {
-			ServiceName string `json:"service-name"`
+			TargetID       string `json:"target-id"`
+			ServiceName    string `json:"service-name"`
+			ServiceVersion string `json:"service-version"`
 		}
 
 		var req request
@@ -126,7 +128,7 @@ func (api *API) HandlerGetInventoryForService() fiber.Handler {
 			})
 		}
 
-		reconstructedInventory, errGet := api.serviceMain.GetInventoryForService(&services.ParamsGetInventoryForService{
+		reconstructedInventory, errGet := api.serviceMain.InventoryGetServices(&services.ParamsInventoryGetServices{
 			ServiceName: req.ServiceName,
 		})
 		if errGet != nil {

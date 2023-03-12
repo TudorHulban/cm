@@ -45,3 +45,10 @@ func (inv *Inventory) NewService(params *ParamsNewService, entries ...*domain.En
 func (s *Service) AddEntries(entries ...*domain.Entry) {
 	s.Entries = append(s.Entries, entries...)
 }
+
+func (s *Service) CheckIn() {
+	s.Lock()
+	defer s.Unlock()
+
+	s.LastCheckin = time.Now()
+}
