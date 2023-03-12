@@ -1,0 +1,10 @@
+{
+   "ServiceName":"service 1",
+   "ServiceVersion":"service 1 version",
+   "Entries":[
+      {
+         "Name":"one",
+         "Value":"value one"
+      }
+   ]
+}

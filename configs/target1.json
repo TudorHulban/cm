@@ -1,0 +1,7 @@
+{
+    "ServiceNames":[
+       "service 1",
+       "service 2"
+    ],
+    "TargetName":"target 1"
+ }

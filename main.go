@@ -16,7 +16,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-//go:embed configs/*.json
+//go:embed configs
 var _fs embed.FS
 
 func main() {
@@ -27,7 +27,14 @@ func main() {
 		},
 	}
 
-	configFiles, errLoad := loadConfigFiles()
+	fsEntries, errRead := loadFSEntries()
+	if errRead != nil {
+		log.Error().Msg(helpers.ReplEOL(errRead.Error()))
+
+		os.Exit(apperrors.OSExitForFileOperationsIssues)
+	}
+
+	configFiles, errLoad := loadVarsFiles(fsEntries)
 	if errLoad != nil {
 		log.Error().Msg(helpers.ReplEOL(errLoad.Error()))
 

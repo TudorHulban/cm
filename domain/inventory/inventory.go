@@ -8,6 +8,7 @@ import (
 
 type Inventory struct {
 	Targets       map[TargetID]*Target
+	Services      map[ServiceID]*Service
 	CurrentTarget TargetID
 
 	sync.Mutex
@@ -17,6 +18,15 @@ func NewInventory() *Inventory {
 	return &Inventory{
 		Targets: make(map[TargetID]*Target),
 	}
+}
+
+func (inv *Inventory) AddService(id ServiceID, service *Service) {
+	inv.Lock()
+	defer inv.Unlock()
+
+	// TODO: check if not already existing
+
+	inv.Services[id] = service
 }
 
 func (inv *Inventory) CheckIn(target TargetID) error {

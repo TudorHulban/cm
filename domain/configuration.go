@@ -45,7 +45,7 @@ func NewTargets(targets ...string) []TargetID {
 
 func NewConfigurationFrom(configFiles map[string][]byte) (*Configuration, error) {
 	if len(configFiles) == 0 {
-		return nil, errors.New("no config file contents passed")
+		return nil, errors.New("no config files contents passed")
 	}
 
 	res := Configuration{
